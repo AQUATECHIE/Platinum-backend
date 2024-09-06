@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs"
 
 // const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // the User schema
 const UserSchema = new Schema({
-    Name: {
+    name: {
         type: String,
         required: true,
         trim: true,
@@ -35,7 +36,9 @@ const UserSchema = new Schema({
     confirmPassword: {
         type: String,
         required: true,
+        
         validate: {
+            
             validator: function () {
                 return this.password === this.confirmPassword;
             },

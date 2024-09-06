@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
-  const { name, email, country, password } = req.body;
-
-  try {
+    
+    try {
+      const { name, email, country, password, confirmPassword } = req.body;
     // Check if the user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -18,8 +18,12 @@ export const register = async (req, res) => {
       email,
       country,
       password,
+      confirmPassword
     });
-    res.status(201).json({ message: 'User registered successfully!' });
+    if (user){
+
+        res.status(201).json({ message: 'User registered successfully!' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error during registration' });
@@ -27,9 +31,10 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  
 
   try {
+    const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
