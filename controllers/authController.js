@@ -13,9 +13,12 @@ export const register = async (req, res) => {
     }
 
     // Create and save the new user
-    const newUser = new User({ name, email, country, password });
-    await newUser.save();
-
+    const user = await User.create({
+      name,
+      email,
+      country,
+      password,
+    });
     res.status(201).json({ message: 'User registered successfully!' });
   } catch (error) {
     console.error(error);
