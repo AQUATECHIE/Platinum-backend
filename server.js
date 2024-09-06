@@ -4,10 +4,10 @@ import cors from "cors"
 import morgan from "morgan"
 import path from "path"
 import fileUpload from 'express-fileupload';
-import {errorHandler} from "./middlewares/error-handler.js"
+import { errorHandler } from "./middlewares/errorHandler.js"
 
 import connectDB from "./config/db.js"
-import user_router from "./routes/userRoutes.js"
+import router from "./routes/authRoutes.js"
 
 dotenv.config({path: "./config/config.env"});
 connectDB().then()
@@ -19,7 +19,7 @@ app.use(morgan("dev"))
 app.use(express.json({limit: "50mb"}))
 app.use(express.urlencoded({extended: "true", limit: "50mb"}))
 app.use(fileUpload());
-app.use("/api/user", user_router)
+app.use("/api", router)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
