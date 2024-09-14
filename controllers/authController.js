@@ -35,37 +35,33 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-
   const user = await User.findOne({ email });
   if (!user || !(await user.matchPassword(password))) {
-    return res.status(401).json({
-      message: "invalid details"
-    });
+      return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  // Generate 2FA
+  // Generate 2FA token
   const token = user.getTwoFactorToken();
   await user.save();
-
 
   // Send the 2FA token via email
   const message = `Your 2FA code is: ${token}`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your 2FA Code',
-      message
-    });
+      await sendEmail({
+          email: user.email,
+          subject: 'Your 2FA Code',
+          message
+      });
 
-    res.status(200).json({
-      success: true,
-      message: '2FA code sent to your email',
-    });
+      res.status(200).json({
+          success: true,
+          message: '2FA code sent to your email',
+      });
   } catch (error) {
-    user.twoFactorToken = undefined;
-    user.twoFactorTokenExpire = undefined;
-    await user.save();
-    res.status(500).json({ message: "Email could not be sent" });
+      user.twoFactorToken = undefined;
+      user.twoFactorTokenExpire = undefined;
+      await user.save();
+      res.status(500).json({ message: "Email could not be sent" });
   }
 };
 
@@ -74,12 +70,12 @@ export const verify2FA = async (req, res) => {
 
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   const user = await User.findOne({
-    twoFactorToken: hashedToken,
-    twoFactorTokenExpire: { $gt: Date.now() }
+      twoFactorToken: hashedToken,
+      twoFactorTokenExpire: { $gt: Date.now() }
   });
 
   if (!user) {
-    return res.status(400).json({ message: "Invalid or expired token" });
+      return res.status(400).json({ message: "Invalid or expired token" });
   }
 
   // Clear 2FA token
@@ -87,6 +83,14 @@ export const verify2FA = async (req, res) => {
   user.twoFactorTokenExpire = undefined;
   await user.save();
 
-  res.status(200).json({ success: true, message: '2FA verification successful' });
-};
+  // Generate JWT Token (after successful 2FA)
+  const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN
+  });
 
+  res.status(200).json({
+      success: true,
+      token: jwtToken,
+      message: '2FA verification successful. You are now logged in.'
+  });
+};
