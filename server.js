@@ -14,7 +14,10 @@ connectDB().then()
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',  // React frontend URL
+    credentials: true  // Enable if you're using cookies/auth tokens
+}));
 app.use(morgan("dev"))
 app.use(express.json({limit: "50mb"}))
 app.use(express.urlencoded({extended: "true", limit: "50mb"}))
