@@ -5,44 +5,108 @@ import sendEmail from '../utilities/sendEmail.js';
 
 
 
+
 export const register = async (req, res) => {
-
-  
   try {
-    const { name, email, country, password, confirmPassword } = req.body;
-  
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      return res.status(400).json({ error: 'Passwords do not match' });
-    }
-    // Check if user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
+      const { name, email, country, password, confirmPassword } = req.body;
 
-    // Create new user
-    const newUser = await User.create({ name, email, country, password, confirmPassword});
+      // Check if passwords match
+      if (password !== confirmPassword) {
+          return res.status(400).json({ error: 'Passwords do not match' });
+      }
+      // Check if user already exists
+      const userExists = await User.findOne({ email });
+      if (userExists) {
+          return res.status(400).json({ error: 'User already exists' });
+      }
 
-    // Generate email verification token
-    const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      // Create new user
+      const newUser = await User.create({ name, email, country, password, confirmPassword });
 
-    // Send verification email (if this fails, catch the error and handle it)
-    const verificationUrl = `${req.protocol}://${req.get('host')}/auth/verify/${verificationToken}`;
-  
-      await sendEmail(email, 'Verify your email', `Click the link to verify your email: ${verificationUrl}`);
+      // Generate email verification token
+      const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+      // Send verification email (if this fails, catch the error and handle it)
+      const verificationUrl = `${req.protocol}://${req.get('host')}/auth/verify/${verificationToken}`;
+
+      const message = `Click the link to verify your email: ${verificationUrl}`
+      await sendEmail( email,  'Verify your email', message );
       console.log(sendEmail)
-    // } catch (emailError) {
-    //   console.error('Error sending email:', emailError);
-    //   return res.status(500).json({ error: 'Error sending verification email. Please try again later.' });
-    // }
-
-    res.status(201).json({ message: 'User registered, check your email to verify your account' });
+      res.status(201).json({ message: 'User registered, check your email to verify your account' });
   } catch (error) {
-    console.error('Server error during registration:', error);
-    res.status(500).json({ error: 'Server error during registration. Please try again later.' });
+      console.error('Server error during registration:', error);
+      res.status(500).json({ error: 'Server error during registration. Please try again later.' });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export const register = async (req, res) => {
+
+  
+//   try {
+//     const { name, email, country, password, confirmPassword } = req.body;
+  
+//     // Check if passwords match
+//     if (password !== confirmPassword) {
+//       return res.status(400).json({ error: 'Passwords do not match' });
+//     }
+//     // Check if user already exists
+//     const userExists = await User.findOne({ email });
+//     if (userExists) {
+//       return res.status(400).json({ error: 'User already exists' });
+//     }
+
+//     // Create new user
+//     const newUser = await User.create({ name, email, country, password, confirmPassword});
+
+//     // Generate email verification token
+//     const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+//     // Send verification email (if this fails, catch the error and handle it)
+//     const verificationUrl = `${req.protocol}://${req.get('host')}/auth/verify/${verificationToken}`;
+
+
+//     const message = `Click the link to verify your email: ${verificationUrl}`
+//       await sendEmail({email: email, subject: 'Verify your email', message });
+//       console.log(sendEmail)
+//     // } catch (emailError) {
+//     //   console.error('Error sending email:', emailError);
+//     //   return res.status(500).json({ error: 'Error sending verification email. Please try again later.' });
+//     // }
+
+//     res.status(201).json({ message: 'User registered, check your email to verify your account' });
+//   } catch (error) {
+//     console.error('Server error during registration:', error);
+//     res.status(500).json({ error: 'Server error during registration. Please try again later.' });
+//   }
+// };
 
 
 
