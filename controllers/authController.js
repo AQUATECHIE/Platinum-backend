@@ -22,19 +22,16 @@ export const register = async (req, res) => {
     }
 
     // Create new user
-    const newUser = await User.create({ name, email, country, password});
+    const newUser = await User.create({ name, email, country, password, confirmPassword});
 
-
-
-    
     // Generate email verification token
     const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     // Send verification email (if this fails, catch the error and handle it)
-    // try {
-    //   const verificationUrl = `${req.protocol}://${req.get('host')}/auth/verify/${verificationToken}`;
-    //   await sendEmail(email, 'Verify your email', `Click the link to verify your email: ${verificationUrl}`);
-    //   console.log(email)
+    const verificationUrl = `${req.protocol}://${req.get('host')}/auth/verify/${verificationToken}`;
+  
+      await sendEmail(email, 'Verify your email', `Click the link to verify your email: ${verificationUrl}`);
+      console.log(sendEmail)
     // } catch (emailError) {
     //   console.error('Error sending email:', emailError);
     //   return res.status(500).json({ error: 'Error sending verification email. Please try again later.' });
@@ -46,6 +43,9 @@ export const register = async (req, res) => {
     res.status(500).json({ error: 'Server error during registration. Please try again later.' });
   }
 };
+
+
+
 
 
 
