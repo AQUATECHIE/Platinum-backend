@@ -16,7 +16,9 @@ const app = express()
 
 app.use(cors({
     origin: '*',  // React frontend URL
-    credentials: true  // Enable if you're using cookies/auth tokens
+    
+    // credentials: true 
+     // Enable if you're using cookies/auth tokens
 }));
 app.use(morgan("dev"))
 app.use(express.json({limit: "50mb"}))
