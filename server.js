@@ -15,7 +15,7 @@ connectDB().then()
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:5000',  // React frontend URL
+    origin: 'http://localhost:3000',  // React frontend URL
     credentials: true  // Enable if you're using cookies/auth tokens
 }));
 app.use(morgan("dev"))
