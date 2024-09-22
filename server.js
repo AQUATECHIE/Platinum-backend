@@ -29,8 +29,8 @@ app.use("/api/", router)
 
 const PORT = process.env.PORT || 5000;
 app.listen(
-    PORT, '0.0.0.0', () =>{
+    PORT, 
 
         console.log(`servers runnin in ${process.env.NODE_ENV} mode on port ${PORT}`)
-    }
+    
 )
