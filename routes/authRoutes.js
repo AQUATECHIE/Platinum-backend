@@ -21,7 +21,7 @@ router.post('/login', validateLogin, handleValidationErrors, login);
 // router.get('/profile', protect, UserProfile)
 
 
-router.get('/dashboard', protect, (req, res) => {
+router.get('/profile', protect, (req, res) => {
     res.status(200).json({ name: req.user.name, email: req.user.email});
 });
 
