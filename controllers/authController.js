@@ -151,7 +151,8 @@ export const login = async (req, res) => {
 export const UserProfile = async (req, res) => {
   try {
 
-    const user = req.User;
+    console.log("Request User:", req.user);
+    const user = req.user;
   
     if(!user) {
       res.json({
