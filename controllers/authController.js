@@ -152,9 +152,9 @@ export const UserProfile = async (req, res) => {
   try {
 
     console.log("Request User:", req.user);
-    const user = req.User;
+    const user = req.user;
   
-    if(!user) {
+    if(user) {
       res.json({
         _id: user._id,
         name: user.name,
