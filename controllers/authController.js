@@ -152,7 +152,7 @@ export const UserProfile = async (req, res) => {
   try {
 
     console.log("Request User:", req.user);
-    const user = req.user;
+    const user = req.User;
   
     if(!user) {
       res.json({
