@@ -8,12 +8,9 @@ import sendEmail from '../utilities/sendEmail.js';
 
 export const register = async (req, res) => {
   try {
-    const { name, email,  password, confirmPassword } = req.body;
+    const { name, email,  password,  } = req.body;
 
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      return res.status(400).json({ error: 'Passwords do not match' });
-    }
+    
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
