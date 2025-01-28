@@ -8,7 +8,7 @@ import sendEmail from '../utilities/sendEmail.js';
 
 export const register = async (req, res) => {
   try {
-    const { name, email, country, password, confirmPassword } = req.body;
+    const { name, email,  password, confirmPassword } = req.body;
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -21,7 +21,7 @@ export const register = async (req, res) => {
     }
 
     // Create new user
-    const newUser = await User.create({ name, email, country, password, });
+    const newUser = await User.create({ name, email,  password, });
 
     // Generate email verification token
     const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -152,18 +152,9 @@ export const UserProfile = async (req, res) => {
   try {
 
     console.log("Request User:", req.user);
-    const user = req.user;
+    const user = await User.findById(req.user.id).select('-password')
 
-    if (user) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        country: user.country,
-      })
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
+    res.json(user)
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
 

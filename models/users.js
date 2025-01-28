@@ -26,10 +26,7 @@ const UserSchema = new Schema({
             message: props => `${props.value} is not a valid email address!`
         }
     },
-    country: {
-        type: String,
-        required: true,
-    },
+    
     password: {
         type: String,
         required: true,
@@ -59,15 +56,15 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Generate 2FA Token
-// UserSchema.methods.getTwoFactorToken = function() {
-//     const token = crypto.randomBytes(20).toString('hex');
+UserSchema.methods.getTwoFactorToken = function() {
+    const token = crypto.randomBytes(20).toString('hex');
 
     // Save token and expiry time (10 minutes)
-//     this.twoFactorToken = crypto.createHash('sha256').update(token).digest('hex');
-//     this.twoFactorTokenExpire = Date.now() + 10 * 60 * 1000;
+    this.twoFactorToken = crypto.createHash('sha256').update(token).digest('hex');
+    this.twoFactorTokenExpire = Date.now() + 10 * 60 * 1000;
 
-//     return token;
-// };
+    return token;
+};
 
 const User = mongoose.model('User', UserSchema);
 
